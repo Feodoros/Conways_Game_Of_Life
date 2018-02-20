@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Game_Life
 {
-    class Life
+    class Life //Жизнь клеток, правила жизни
     {
         int[,] Field; //0 - пусто, 1 - живой, 2 - умерает, -1 - рождается
         int[,] Sum; // Sum[x,y] - сколько инфузорий правее и ниже клетки x,y
@@ -27,7 +27,7 @@ namespace Game_Life
             }
         }
 
-        public int Turn(int x, int y)
+        public int Change_Cells_Type(int x, int y)
         {
             Field[x, y] = Field[x, y] == 0 ? 1 : 0;
             return Field[x, y];
@@ -51,7 +51,7 @@ namespace Game_Life
             return Sum[x, y];
         }
 
-        private int Around1(int x, int y) //Проверяем окрестности инфузории на наличие других.
+        private int Get_Live_Cells_Count(int x, int y) //Проверяем окрестности инфузории на наличие других.
         {
             int sum = 0;
             for (int sx = -1; sx <= 1; sx++)
@@ -81,13 +81,13 @@ namespace Game_Life
                    Get_Sum(x + 1, y + 1);
         }
 
-        public void Step1() //Отмечаем где родятся и умрут инфузории.
+        public void Mark_Cells_For_Life_Or_Die() //Отмечаем где родятся и умрут инфузории.
         {
             for (int x = 0; x < w; x++)
             {
                 for (int y = 0; y < h; y++)
                 {
-                    int a = Around1(x, y);
+                    int a = Get_Live_Cells_Count(x, y);
                     if (Field[x, y] == 1)
                     {
                         if (a <= 2)
@@ -104,7 +104,7 @@ namespace Game_Life
             }
         }
 
-        public void Step2()  //Убираем умерших и размещаем родившихся.
+        public void Place_Life_And_Clean_Cells()  //Убираем умерших и размещаем родившихся.
         {
             for (int x = 0; x < w; x++)
             {

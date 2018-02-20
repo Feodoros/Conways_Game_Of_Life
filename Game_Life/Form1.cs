@@ -46,17 +46,17 @@ namespace Game_Life
         {
             int x = ((Label)sender).Location.X / box_w;
             int y = ((Label)sender).Location.Y / box_h;
-            int color = life.Turn(x, y);
+            int color = life.Change_Cells_Type(x, y);
             Lab[x, y].BackColor = color == 1 ? color_live : color_none;
         }
 
         private void Button1_Click(object sender, EventArgs e)
         {
-            life.Step1();
-            refresh();
+            life.Mark_Cells_For_Life_Or_Die();
+            Paint();
         }
 
-        private void refresh()
+        private void Paint()
         {
             for (int x = 0; x < w; x++)
                 for (int y = 0; y < h; y++)
@@ -72,15 +72,15 @@ namespace Game_Life
 
         private void Button2_Click(object sender, EventArgs e)
         {
-            life.Step2();
-            refresh();
+            life.Place_Life_And_Clean_Cells();
+            Paint();
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            life.Step1();
-            life.Step2();
-            refresh();
+            life.Mark_Cells_For_Life_Or_Die();
+            life.Place_Life_And_Clean_Cells();
+            Paint();
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -90,18 +90,20 @@ namespace Game_Life
 
         private void timer_Tick(object sender, EventArgs e)
         {
-            life.Step1();
-            life.Step2();
-            refresh();
+            life.Mark_Cells_For_Life_Or_Die();
+            life.Place_Life_And_Clean_Cells();
+            Paint();
         }
 
         private void Add_Label(int x, int y)
         {
-            Lab[x, y] = new Label();
-            Lab[x, y].BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            Lab[x, y].Location = new System.Drawing.Point(x * box_w, y * box_h);
-            Lab[x, y].Size = new System.Drawing.Size(box_w + 1, box_h + 1);
-            Lab[x, y].Parent = panel;
+            Lab[x, y] = new Label
+            {
+                BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle,
+                Location = new System.Drawing.Point(x * box_w, y * box_h),
+                Size = new System.Drawing.Size(box_w + 1, box_h + 1),
+                Parent = panel
+            };
             Lab[x, y].MouseClick += new System.Windows.Forms.MouseEventHandler(this.Label1_MouseClick);
         }
     }
