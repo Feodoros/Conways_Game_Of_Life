@@ -15,8 +15,8 @@ namespace Game_Life
         int box_w = 20;
         int box_h = 20;
         int w, h;
-
-        Label[,] Lab;
+        Random rand = new Random();
+        Label[,] Lab, Lab1;
         Life life;
 
         Color color_none = Color.White;
@@ -34,13 +34,17 @@ namespace Game_Life
         {
             w = (panel.Width - 1) / box_w;
             h = (panel.Height - 1) / box_h;
-
+            Lab1 = new Label[w, h];
             life = new Life(w, h);
             Lab = new Label[w, h];
             for (int x = 0; x < w; x++)
                 for (int y = 0; y < h; y++)
+                {
+                    Add_Label_Pattern(x, y);
                     Add_Label(x, y);
+                }
         }
+
 
         private void Label1_MouseClick(object sender, MouseEventArgs e)
         {
@@ -70,6 +74,21 @@ namespace Game_Life
                     }
         }
 
+        private void Paint_Pattern()
+        {
+            for (int x = 0; x < w; x++)
+                for (int y = 0; y < h; y++)
+                {
+                    int m = rand.Next(0, 4);
+                    switch (life.Get_Field_Pattern(x, y))
+                    {
+                        case 0: Lab1[x, y].BackColor = color_none; break;
+                        case 1: Lab1[x, y].BackColor = color_live; break;
+                    }
+                }
+        }
+
+
         private void Button2_Click(object sender, EventArgs e)
         {
             life.Place_Life_And_Clean_Cells();
@@ -95,16 +114,48 @@ namespace Game_Life
             Paint();
         }
 
+        private void panel_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            timer1.Enabled = !timer1.Enabled;
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            life.Scan_Pattern();
+            Paint_Pattern();
+        }
+
         private void Add_Label(int x, int y)
         {
             Lab[x, y] = new Label
             {
-                BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle,
-                Location = new System.Drawing.Point(x * box_w, y * box_h),
-                Size = new System.Drawing.Size(box_w + 1, box_h + 1),
+                BorderStyle = BorderStyle.FixedSingle,
+                Location = new Point(x * box_w, y * box_h),
+                Size = new Size(box_w + 1, box_h + 1),
                 Parent = panel
             };
-            Lab[x, y].MouseClick += new System.Windows.Forms.MouseEventHandler(this.Label1_MouseClick);
+            Lab[x, y].MouseClick += new MouseEventHandler(this.Label1_MouseClick);
+        }
+
+        private void Add_Label_Pattern(int x, int y)
+        {
+            Lab1[x, y] = new Label
+            {
+                BorderStyle = BorderStyle.FixedSingle,
+                Location = new Point(x * box_w, y * box_h),
+                Size = new Size(box_w + 1, box_h + 1),
+                Parent = panel1
+            };
         }
     }
 }

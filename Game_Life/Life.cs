@@ -11,18 +11,20 @@ namespace Game_Life
         int[,] Field; //0 - пусто, 1 - живой, 2 - умерает, -1 - рождается
         int[,] Sum; // Sum[x,y] - сколько инфузорий правее и ниже клетки x,y
         int w, h;
-
+        int[,] Pattern;
 
         public Life(int w, int h)
         {
             this.w = w;
             this.h = h;
+            Pattern = new int[w, h];
             Field = new int[w, h];
             for (int x = 0; x < w; x++)
             {
                 for (int y = 0; y < h; y++)
                 {
                     Field[x, y] = 0;
+                    Pattern[x, y] = 0;
                 }
             }
         }
@@ -33,6 +35,68 @@ namespace Game_Life
             return Field[x, y];
         }
 
+        public void Scan_Pattern()
+        {
+            for (int x1 = 0; x1 < w; x1++)
+            {
+                for (int y1 = 0; y1 < h; y1++)
+                {
+
+                    if (Get_Field(x1, y1) == 1 && Get_Field(x1, y1 + 1) == 1 && Get_Field(x1, y1 + 2) == 1 && (Get_Live_Cells_Count(x1, y1) + Get_Live_Cells_Count(x1, y1 + 1) + Get_Live_Cells_Count(x1, y1 + 2) <= 7))
+                    {
+
+                        Pattern[x1, y1] = 1;
+                        Pattern[x1, y1 + 1] = 1;
+                        Pattern[x1, y1 + 2] = 1;
+                    }
+                    if (Get_Field(x1, y1) == 1 && Get_Field(x1 + 1, y1) == 1 && Get_Field(x1 + 2, y1) == 1 && (Get_Live_Cells_Count(x1, y1) + Get_Live_Cells_Count(x1 + 1, y1) + Get_Live_Cells_Count(x1 + 2, y1) <= 7))
+                    {
+
+                        Pattern[x1, y1] = 1;
+                        Pattern[x1 + 1, y1] = 1;
+                        Pattern[x1 + 2, y1] = 1;
+                    }
+                    if (Get_Field(x1, y1) == 1 && Get_Field(x1 - 1, y1 + 1) == 1 && Get_Field(x1 - 1, y1 + 2) == 1 && Get_Field(x1 + 1, y1 + 1) == 1 && Get_Field(x1 + 1, y1 + 2) == 1 && Get_Field(x1, y1 + 3) == 1 &&
+                        (Get_Live_Cells_Count(x1, y1) + Get_Live_Cells_Count(x1 - 1, y1 + 1) + Get_Live_Cells_Count(x1 - 1, y1 + 2) + Get_Live_Cells_Count(x1 + 1, y1 + 1) + Get_Live_Cells_Count(x1 + 1, y1 + 2) + Get_Live_Cells_Count(x1, y1 + 3)) <= 18)
+                    {
+                        Pattern[x1, y1] = 1;
+                        Pattern[x1 - 1, y1 + 1] = 1;
+                        Pattern[x1 - 1, y1 + 2] = 1;
+                        Pattern[x1, y1 + 3] = 1;
+                        Pattern[x1 + 1, y1 + 1] = 1;
+                        Pattern[x1 + 1, y1 + 2] = 1;
+                    }
+                    if (Get_Field(x1, y1) == 1 && Get_Field(x1 + 1, y1 - 1) == 1 && Get_Field(x1 + 2, y1 - 1) == 1 && Get_Field(x1 + 3, y1) == 1 && Get_Field(x1 + 2, y1 + 1) == 1 && Get_Field(x1 + 1, y1 + 1) == 1 &&
+                        (Get_Live_Cells_Count(x1, y1) + Get_Live_Cells_Count(x1 + 1, y1 - 1) + Get_Live_Cells_Count(x1 + 2, y1 - 1) + Get_Live_Cells_Count(x1 + 3, y1) + Get_Live_Cells_Count(x1 + 2, y1 + 1) + Get_Live_Cells_Count(x1 + 1, y1 + 1)) <= 18)
+                    {
+                        Pattern[x1, y1] = 1;
+                        Pattern[x1 + 1, y1 - 1] = 1;
+                        Pattern[x1 + 2, y1 - 1] = 1;
+                        Pattern[x1 + 3, y1] = 1;
+                        Pattern[x1 + 1, y1 + 1] = 1;
+                        Pattern[x1 + 2, y1 + 1] = 1;
+                    }
+                    if (Get_Field(x1, y1) == 1 && Get_Field(x1 + 1, y1 + 1) == 1 && Get_Field(x1 + 1, y1 + 2) == 1 && Get_Field(x1, y1 + 2) == 1 && Get_Field(x1 - 1, y1 + 2) == 1 && (
+                        Get_Live_Cells_Count(x1, y1) + Get_Live_Cells_Count(x1 + 1, y1 + 1) + Get_Live_Cells_Count(x1 + 1, y1 + 2) + Get_Live_Cells_Count(x1, y1 + 2) + Get_Live_Cells_Count(x1 - 1, y1 + 2)) <= 15)
+                    {
+                        Pattern[x1, y1] = 1;
+                        Pattern[x1, y1 + 2] = 1;
+                        Pattern[x1 + 1, y1 + 2] = 1;
+                        Pattern[x1 - 1, y1 + 2] = 1;
+                        Pattern[x1 + 1, y1 + 1] = 1;
+                    }
+                    if (Get_Field(x1, y1) == 1 && Get_Field(x1 + 1, y1) == 1 && Get_Field(x1, y1 + 1) == 1 && Get_Field(x1 + 1, y1 + 1) == 1 &&
+                        (Get_Live_Cells_Count(x1, y1) + Get_Live_Cells_Count(x1 + 1, y1) + Get_Live_Cells_Count(x1, y1 + 1) + Get_Live_Cells_Count(x1 + 1, y1 + 1)) <= 16)
+                    {
+                        Pattern[x1, y1] = 1;
+                        Pattern[x1 + 1, y1] = 1;
+                        Pattern[x1, y1 + 1] = 1;
+                        Pattern[x1 + 1, y1 + 1] = 1;
+                    }
+                }
+            }
+        }
+
         public int Get_Field(int x, int y)
         {
             if (x < 0 || x >= w)
@@ -40,6 +104,15 @@ namespace Game_Life
             if (y < 0 || y >= h)
                 return 0;
             return Field[x, y];
+        }
+
+        public int Get_Field_Pattern(int x1, int y1)
+        {
+            if (x1 < 0 || x1 >= w)
+                return 0;
+            if (y1 < 0 || y1 >= h)
+                return 0;
+            return Pattern[x1, y1];
         }
 
         public int Get_Sum(int x, int y)
